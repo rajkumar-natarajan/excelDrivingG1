@@ -10,11 +10,11 @@ A comprehensive Flutter app to help new drivers in Ontario, Canada prepare for t
 
 ## Features
 
-- **92 Official Questions** — comprehensive coverage of the Ontario MTO Driver's Handbook 2026
+- **192 Official Questions** — comprehensive coverage of the Ontario MTO Driver's Handbook 2026
 - **6 Question Categories** — Graduated Licensing, Traffic Signs, Rules of the Road, Safe Driving, Sharing the Road, Special Situations
 - **3 Test Modes** — Quick Check (10 Q), Practice Test (20 Q), Mock G1 Test (40 Q)
 - **Smart Learning** — spaced-repetition system that tracks weak areas, bookmarks, and review queues
-- **Bilingual — English & French** — full UI and all 92 questions translated into Canadian French
+- **Bilingual — English & French** — full UI and all 192 questions translated into Canadian French
 - **Gamification** — XP, levels, daily streaks, and 20+ achievements
 - **Study Guide** — quick-reference summaries of key road rules
 - **Progress Tracking** — per-category accuracy, accuracy trends, session history
@@ -68,7 +68,7 @@ flutter test
 ```
 
 The test suite contains 290+ unit tests covering:
-- All 92 questions loaded and validated
+- All 192 questions loaded and validated
 - Question shuffling preserves correct answer index
 - French translations completeness check
 - Gamification XP and level calculations
@@ -86,7 +86,9 @@ lib/
 │   ├── settings_controller.dart       # Theme, difficulty, language preferences
 │   └── smart_learning_controller.dart # Spaced repetition, bookmarks, weak areas
 ├── data/
-│   ├── french_question_translations.dart  # All 92 questions in Canadian French
+│   ├── french_question_translations.dart  # 92 original questions in Canadian French
+│   ├── french_translations_extra.dart     # 100 extra questions in Canadian French
+│   ├── question_bank_extra.dart           # 100 extra questions (English)
 │   └── question_data_manager.dart         # Question loading, filtering, localization
 ├── l10n/
 │   └── app_strings.dart               # All UI strings (English + French)
@@ -123,7 +125,7 @@ The app ships with **full bilingual support** (English / Français). Language is
 
 | Component | English | French |
 |-----------|---------|--------|
-| All 92 questions | ✅ | ✅ |
+| All 192 questions | ✅ | ✅ |
 | All UI strings | ✅ | ✅ |
 | Navigation labels | ✅ | ✅ |
 | Category names | ✅ | ✅ |

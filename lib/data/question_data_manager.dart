@@ -1,6 +1,8 @@
 import 'dart:math';
 import '../models/question.dart';
 import 'french_question_translations.dart';
+import 'french_translations_extra.dart';
+import 'question_bank_extra.dart';
 
 /// Manages G1 driving test question data (based on Ontario MTO Driver's Handbook)
 class QuestionDataManager {
@@ -16,6 +18,12 @@ class QuestionDataManager {
     _allQuestions.addAll(_createSafeDrivingQuestions());
     _allQuestions.addAll(_createSharingRoadQuestions());
     _allQuestions.addAll(_createSpecialSituationsQuestions());
+    _allQuestions.addAll(QuestionBankExtra.graduatedLicensing());
+    _allQuestions.addAll(QuestionBankExtra.trafficSigns());
+    _allQuestions.addAll(QuestionBankExtra.rulesOfRoad());
+    _allQuestions.addAll(QuestionBankExtra.safeDriving());
+    _allQuestions.addAll(QuestionBankExtra.sharingRoad());
+    _allQuestions.addAll(QuestionBankExtra.specialSituations());
   }
 
   /// Re-initialise questions (useful for testing). In normal app usage the
@@ -28,6 +36,12 @@ class QuestionDataManager {
     _allQuestions.addAll(_createSafeDrivingQuestions());
     _allQuestions.addAll(_createSharingRoadQuestions());
     _allQuestions.addAll(_createSpecialSituationsQuestions());
+    _allQuestions.addAll(QuestionBankExtra.graduatedLicensing());
+    _allQuestions.addAll(QuestionBankExtra.trafficSigns());
+    _allQuestions.addAll(QuestionBankExtra.rulesOfRoad());
+    _allQuestions.addAll(QuestionBankExtra.safeDriving());
+    _allQuestions.addAll(QuestionBankExtra.sharingRoad());
+    _allQuestions.addAll(QuestionBankExtra.specialSituations());
   }
 
   List<Question> get allQuestions => List.from(_allQuestions);
@@ -80,7 +94,7 @@ class QuestionDataManager {
   /// original order — translation happens before shuffling.
   Question _localizeQuestion(Question q, Language lang) {
     if (lang == Language.english) return q;
-    final t = kFrenchTranslations[q.id];
+    final t = kFrenchTranslations[q.id] ?? kFrenchTranslationsExtra[q.id];
     if (t == null) return q;
     return Question(
       id: q.id,

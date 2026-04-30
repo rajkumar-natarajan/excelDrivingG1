@@ -120,10 +120,28 @@ class SettingsScreen extends StatelessWidget {
   }
 
   Widget _buildInfoTile(IconData icon, String label, String value) {
-    return ListTile(
-      leading: Icon(icon, color: Colors.grey.shade600, size: 22),
-      title: Text(label),
-      trailing: Text(value, style: const TextStyle(color: Colors.grey, fontSize: 13)),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Icon(icon, color: Colors.grey.shade600, size: 22),
+          const SizedBox(width: 16),
+          Expanded(
+            flex: 2,
+            child: Text(label),
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+            flex: 3,
+            child: Text(
+              value,
+              style: const TextStyle(color: Colors.grey, fontSize: 13),
+              textAlign: TextAlign.right,
+            ),
+          ),
+        ],
+      ),
     );
   }
 
