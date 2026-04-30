@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import '../models/question.dart';
 import '../controllers/gamification_controller.dart';
+import '../controllers/settings_controller.dart';
+import '../l10n/app_strings.dart';
+import '../models/question.dart';
 import 'review_screen.dart';
 
 class ResultsScreen extends StatelessWidget {
@@ -23,27 +25,28 @@ class ResultsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final s = AppStrings(SettingsController().language);
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Test Results'),
+        title: Text(s.testResults),
         automaticallyImplyLeading: false,
       ),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          if (leveledUp) _buildLevelUpBanner(context),
-          _buildScoreCard(context),
+          if (leveledUp) _buildLevelUpBanner(context, s),
+          _buildScoreCard(context, s),
           if (pointsEarned > 0 || xpEarned > 0) ...[
             const SizedBox(height: 16),
-            _buildRewardsCard(context),
+            _buildRewardsCard(context, s),
           ],
           const SizedBox(height: 24),
           Text(
-            'Performance Breakdown',
+            s.performanceBreakdown,
             style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 16),
-          _buildBreakdownList(context),
+          _buildBreakdownList(context, s),
           const SizedBox(height: 24),
           OutlinedButton.icon(
             onPressed: () => Navigator.push(
@@ -53,7 +56,7 @@ class ResultsScreen extends StatelessWidget {
               ),
             ),
             icon: const Icon(Icons.assignment_turned_in),
-            label: const Text('Review Answers'),
+            label: Text(s.reviewAnswers),
             style: OutlinedButton.styleFrom(
               padding: const EdgeInsets.symmetric(vertical: 14),
             ),
@@ -61,10 +64,10 @@ class ResultsScreen extends StatelessWidget {
           const SizedBox(height: 12),
           FilledButton(
             onPressed: () => Navigator.of(context).popUntil((route) => route.isFirst),
-            child: const Text('Back to Home'),
             style: FilledButton.styleFrom(
               padding: const EdgeInsets.symmetric(vertical: 14),
             ),
+            child: Text(s.backToHome),
           ),
           const SizedBox(height: 24),
         ],
@@ -72,7 +75,7 @@ class ResultsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildLevelUpBanner(BuildContext context) {
+  Widget _buildLevelUpBanner(BuildContext context, AppStrings s) {
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       padding: const EdgeInsets.all(16),
@@ -92,10 +95,10 @@ class ResultsScreen extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text('LEVEL UP!',
-                    style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20)),
+                Text(s.levelUp,
+                    style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20)),
                 Text(
-                  'You reached Level ${newLevel ?? GamificationController().currentLevel}!',
+                  s.youReachedLevel(newLevel ?? GamificationController().currentLevel),
                   style: const TextStyle(color: Colors.white70),
                 ),
               ],
@@ -107,7 +110,7 @@ class ResultsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildScoreCard(BuildContext context) {
+  Widget _buildScoreCard(BuildContext context, AppStrings s) {
     final percentage = result.percentage;
     final color = _getScoreColor(percentage);
     final passed = result.passed;
@@ -142,7 +145,7 @@ class ResultsScreen extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      passed ? 'PASSED 🎉' : 'TRY AGAIN',
+                      passed ? s.passedBadge : s.tryAgain,
                       style: TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.bold,
@@ -157,9 +160,9 @@ class ResultsScreen extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                _buildStatItem(context, '${result.correctAnswers}/${result.totalQuestions}', 'Correct', Icons.check_circle, Colors.green),
-                _buildStatItem(context, _formatDuration(result.totalTime), 'Time', Icons.timer, Colors.orange),
-                _buildStatItem(context, '${(100 - percentage).toInt()}%', 'Incorrect', Icons.cancel, Colors.red),
+                _buildStatItem(context, '${result.correctAnswers}/${result.totalQuestions}', s.correct, Icons.check_circle, Colors.green),
+                _buildStatItem(context, _formatDuration(result.totalTime), s.time, Icons.timer, Colors.orange),
+                _buildStatItem(context, '${(100 - percentage).toInt()}%', s.incorrect, Icons.cancel, Colors.red),
               ],
             ),
             const SizedBox(height: 16),
@@ -181,9 +184,7 @@ class ResultsScreen extends StatelessWidget {
                   const SizedBox(width: 8),
                   Expanded(
                     child: Text(
-                      passed
-                          ? 'Excellent! You scored above 80% — you\'re ready for the G1 test!'
-                          : 'Keep practising! You need 80% to pass the G1 test.',
+                      passed ? s.passMessage : s.failMessage,
                       style: TextStyle(
                         color: passed ? Colors.green.shade800 : Colors.orange.shade800,
                         fontSize: 13,
@@ -199,7 +200,7 @@ class ResultsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildRewardsCard(BuildContext context) {
+  Widget _buildRewardsCard(BuildContext context, AppStrings s) {
     return Card(
       color: Colors.amber.shade50,
       child: Padding(
@@ -207,9 +208,9 @@ class ResultsScreen extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            _buildRewardItem('💰', '+$pointsEarned', 'Points', Colors.amber.shade700),
+            _buildRewardItem('💰', '+$pointsEarned', s.points, Colors.amber.shade700),
             Container(width: 1, height: 40, color: Colors.amber.shade200),
-            _buildRewardItem('⚡', '+$xpEarned', 'XP', Colors.blue),
+            _buildRewardItem('⚡', '+$xpEarned', s.xp, Colors.blue),
           ],
         ),
       ),
@@ -243,7 +244,7 @@ class ResultsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildBreakdownList(BuildContext context) {
+  Widget _buildBreakdownList(BuildContext context, AppStrings s) {
     return Column(
       children: QuestionType.values.map((type) {
         final typeAnswers = result.answers.where(
@@ -265,7 +266,7 @@ class ResultsScreen extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(type.displayName, style: const TextStyle(fontWeight: FontWeight.w600)),
+                      Text(s.questionTypeName(type), style: const TextStyle(fontWeight: FontWeight.w600)),
                       const SizedBox(height: 4),
                       ClipRRect(
                         borderRadius: BorderRadius.circular(4),

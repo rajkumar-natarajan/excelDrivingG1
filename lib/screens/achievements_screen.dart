@@ -1,21 +1,24 @@
 import 'package:flutter/material.dart';
 import '../controllers/gamification_controller.dart';
+import '../controllers/settings_controller.dart';
+import '../l10n/app_strings.dart';
 
 class AchievementsScreen extends StatelessWidget {
   const AchievementsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final s = AppStrings(SettingsController().language);
     final controller = GamificationController();
     final achievements = allAchievements;
     final unlockedIds = controller.unlockedAchievements;
     final unlockedCount = unlockedIds.length;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Achievements')),
+      appBar: AppBar(title: Text(s.achievementsTitle)),
       body: Column(
         children: [
-          _buildSummaryBanner(context, unlockedCount, achievements.length),
+          _buildSummaryBanner(context, unlockedCount, achievements.length, s),
           Expanded(
             child: ListView.separated(
               padding: const EdgeInsets.all(16),
@@ -24,7 +27,7 @@ class AchievementsScreen extends StatelessWidget {
               itemBuilder: (context, index) {
                 final achievement = achievements[index];
                 final isUnlocked = unlockedIds.contains(achievement.id);
-                return _buildAchievementCard(context, achievement, isUnlocked);
+                return _buildAchievementCard(context, achievement, isUnlocked, s);
               },
             ),
           ),
@@ -33,7 +36,7 @@ class AchievementsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildSummaryBanner(BuildContext context, int unlocked, int total) {
+  Widget _buildSummaryBanner(BuildContext context, int unlocked, int total, AppStrings s) {
     final progress = total > 0 ? unlocked / total : 0.0;
     return Container(
       margin: const EdgeInsets.all(16),
@@ -57,7 +60,7 @@ class AchievementsScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    '$unlocked / $total Unlocked',
+                    '$unlocked / $total ${s.unlocked}',
                     style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18),
                   ),
                   Text('${(progress * 100).toInt()}% complete', style: const TextStyle(color: Colors.white70, fontSize: 13)),
@@ -80,7 +83,7 @@ class AchievementsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildAchievementCard(BuildContext context, Achievement achievement, bool isUnlocked) {
+  Widget _buildAchievementCard(BuildContext context, Achievement achievement, bool isUnlocked, AppStrings s) {
     final rarityColor = _rarityColor(achievement.rarity);
 
     return AnimatedContainer(
@@ -150,7 +153,7 @@ class AchievementsScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    isUnlocked ? achievement.description : 'Keep practising to unlock this achievement',
+                    isUnlocked ? achievement.description : s.keepPractising,
                     style: TextStyle(fontSize: 12, color: isUnlocked ? Colors.grey.shade600 : Colors.grey.shade400),
                   ),
                   if (isUnlocked) ...[

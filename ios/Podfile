@@ -39,5 +39,16 @@ end
 post_install do |installer|
   installer.pods_project.targets.each do |target|
     flutter_additional_ios_build_settings(target)
+    # Strip iCloud Drive / file provider xattrs that block codesign on macOS 26+
+    strip_phase = target.new_shell_script_build_phase('Strip Extended Attributes')
+    strip_phase.shell_script = <<~SCRIPT
+      if [ -d "$TARGET_BUILD_DIR/$PRODUCT_NAME.framework" ]; then
+        xattr -cr "$TARGET_BUILD_DIR/$PRODUCT_NAME.framework" 2>/dev/null || true
+      fi
+      if [ -d "$TARGET_BUILD_DIR/$CONTENTS_FOLDER_PATH" ]; then
+        xattr -cr "$TARGET_BUILD_DIR/$CONTENTS_FOLDER_PATH" 2>/dev/null || true
+      fi
+    SCRIPT
+    strip_phase.run_only_for_deployment_postprocessing = '0'
   end
 end

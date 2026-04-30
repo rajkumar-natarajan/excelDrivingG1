@@ -104,9 +104,10 @@ enum Difficulty {
   const Difficulty(this.value, this.displayName);
 }
 
-/// Language enum (single language for this app)
+/// Language enum
 enum Language {
-  english('en', 'English', '🇨🇦');
+  english('en', 'English', '🇨🇦'),
+  french('fr', 'Français', '🇫🇷');
 
   final String code;
   final String displayName;

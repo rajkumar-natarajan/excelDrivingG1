@@ -1,8 +1,10 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import '../models/question.dart';
+import '../controllers/settings_controller.dart';
 import '../controllers/smart_learning_controller.dart';
 import '../controllers/gamification_controller.dart';
+import '../l10n/app_strings.dart';
 import '../widgets/ontario_theme.dart';
 import 'results_screen.dart';
 
@@ -187,7 +189,7 @@ class _TestSessionScreenState extends State<TestSessionScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Question ${_currentIndex + 1}/${widget.questions.length}'),
+        title: Text(AppStrings(SettingsController().language).questionOf(_currentIndex + 1, widget.questions.length)),
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(4),
           child: LinearProgressIndicator(
@@ -256,7 +258,7 @@ class _TestSessionScreenState extends State<TestSessionScreen> {
                             Icon(_getCategoryIcon(question.type), size: 14, color: OntarioColors.blue),
                             const SizedBox(width: 6),
                             Text(
-                              question.type.displayName,
+                              AppStrings(SettingsController().language).questionTypeName(question.type),
                               style: const TextStyle(
                                 fontSize: 12,
                                 color: OntarioColors.blue,
@@ -398,7 +400,7 @@ class _TestSessionScreenState extends State<TestSessionScreen> {
                               Icon(Icons.info_outline, color: OntarioColors.blue, size: 18),
                               const SizedBox(width: 8),
                               Text(
-                                'Explanation',
+                                AppStrings(SettingsController().language).explanation,
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   color: OntarioColors.blue,
@@ -435,7 +437,7 @@ class _TestSessionScreenState extends State<TestSessionScreen> {
                       child: OutlinedButton.icon(
                         onPressed: _previousQuestion,
                         icon: const Icon(Icons.arrow_back),
-                        label: const Text('Previous'),
+                        label: Text(AppStrings(SettingsController().language).previous),
                         style: OutlinedButton.styleFrom(
                           padding: const EdgeInsets.symmetric(vertical: 14),
                         ),
@@ -449,7 +451,9 @@ class _TestSessionScreenState extends State<TestSessionScreen> {
                       icon: Icon(_currentIndex < widget.questions.length - 1
                           ? Icons.arrow_forward
                           : Icons.check),
-                      label: Text(_currentIndex < widget.questions.length - 1 ? 'Next' : 'Finish'),
+                      label: Text(_currentIndex < widget.questions.length - 1
+                          ? AppStrings(SettingsController().language).next
+                          : AppStrings(SettingsController().language).finish),
                       style: FilledButton.styleFrom(
                         padding: const EdgeInsets.symmetric(vertical: 14),
                       ),

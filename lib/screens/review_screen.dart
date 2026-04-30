@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import '../controllers/settings_controller.dart';
+import '../l10n/app_strings.dart';
 import '../models/question.dart';
 
 class ReviewScreen extends StatefulWidget {
@@ -16,18 +18,19 @@ class _ReviewScreenState extends State<ReviewScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final s = AppStrings(SettingsController().language);
     final filtered = _showOnlyIncorrect
         ? widget.result.answers.where((a) => !a.isCorrect).toList()
         : widget.result.answers;
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Review Answers'),
+        title: Text(s.reviewAnswers),
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: 8),
             child: FilterChip(
-              label: const Text('Incorrect only'),
+              label: Text(s.incorrectOnly),
               selected: _showOnlyIncorrect,
               onSelected: (v) => setState(() => _showOnlyIncorrect = v),
               selectedColor: Colors.red.shade100,
@@ -36,13 +39,13 @@ class _ReviewScreenState extends State<ReviewScreen> {
         ],
       ),
       body: filtered.isEmpty
-          ? const Center(
+          ? Center(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(Icons.check_circle, color: Colors.green, size: 64),
-                  SizedBox(height: 16),
-                  Text('All answers correct! 🎉', style: TextStyle(fontSize: 18)),
+                  const Icon(Icons.check_circle, color: Colors.green, size: 64),
+                  const SizedBox(height: 16),
+                  Text(s.allAnswersCorrect, style: const TextStyle(fontSize: 18)),
                 ],
               ),
             )
@@ -56,13 +59,13 @@ class _ReviewScreenState extends State<ReviewScreen> {
                   (q) => q.id == answer.questionId,
                   orElse: () => widget.questions.first,
                 );
-                return _buildReviewCard(context, question, answer, index + 1);
+                return _buildReviewCard(context, question, answer, index + 1, s);
               },
             ),
     );
   }
 
-  Widget _buildReviewCard(BuildContext context, Question question, UserAnswer answer, int questionNumber) {
+  Widget _buildReviewCard(BuildContext context, Question question, UserAnswer answer, int questionNumber, AppStrings s) {
     final isCorrect = answer.isCorrect;
     return Card(
       child: Padding(
@@ -106,7 +109,7 @@ class _ReviewScreenState extends State<ReviewScreen> {
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: Text(
-                    question.type.displayName,
+                    s.questionTypeName(question.type),
                     style: TextStyle(fontSize: 11, color: Colors.blue.shade700),
                   ),
                 ),

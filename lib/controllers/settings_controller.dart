@@ -9,10 +9,12 @@ class SettingsController with ChangeNotifier {
   ThemeMode _themeMode = ThemeMode.system;
   Difficulty _defaultDifficulty = Difficulty.medium;
   bool _notificationsEnabled = true;
+  Language _language = Language.english;
 
   ThemeMode get themeMode => _themeMode;
   Difficulty get defaultDifficulty => _defaultDifficulty;
   bool get notificationsEnabled => _notificationsEnabled;
+  Language get language => _language;
 
   void toggleTheme(bool isDark) {
     _themeMode = isDark ? ThemeMode.dark : ThemeMode.light;
@@ -29,6 +31,11 @@ class SettingsController with ChangeNotifier {
 
   void setDifficulty(Difficulty difficulty) {
     _defaultDifficulty = difficulty;
+    notifyListeners();
+  }
+
+  void setLanguage(Language lang) {
+    _language = lang;
     notifyListeners();
   }
 

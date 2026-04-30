@@ -3,6 +3,7 @@ import '../controllers/settings_controller.dart';
 import '../controllers/gamification_controller.dart';
 import '../controllers/smart_learning_controller.dart';
 import '../models/question.dart';
+import '../l10n/app_strings.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
@@ -14,31 +15,33 @@ class SettingsScreen extends StatelessWidget {
     final smartLearning = SmartLearningController();
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Settings')),
+      appBar: AppBar(title: Text(AppStrings(settings.language).settingsTitle)),
       body: AnimatedBuilder(
         animation: settings,
         builder: (context, _) {
+          final s = AppStrings(settings.language);
           return ListView(
             padding: const EdgeInsets.all(16),
             children: [
-              _buildSection(context, 'Appearance', [
-                _buildThemeTile(context, settings),
+              _buildSection(context, s.appearance, [
+                _buildThemeTile(context, settings, s),
+                _buildLanguageTile(context, settings, s),
               ]),
               const SizedBox(height: 16),
-              _buildSection(context, 'Practice', [
-                _buildDifficultyTile(context, settings),
+              _buildSection(context, s.practiceSection, [
+                _buildDifficultyTile(context, settings, s),
               ]),
               const SizedBox(height: 16),
-              _buildSection(context, 'Data', [
-                _buildClearDataTile(context, gamification, smartLearning),
+              _buildSection(context, s.dataSection, [
+                _buildClearDataTile(context, gamification, smartLearning, s),
               ]),
               const SizedBox(height: 16),
-              _buildSection(context, 'About', [
-                _buildInfoTile(Icons.app_registration, 'App Name', 'ExcelDriving G1'),
-                _buildInfoTile(Icons.code, 'Version', '1.0.0'),
-                _buildInfoTile(Icons.gavel, 'Content Source', 'Ontario MTO Driver\'s Handbook 2026'),
-                _buildInfoTile(Icons.location_on, 'Province', 'Ontario, Canada'),
-                _buildInfoTile(Icons.school, 'Test Passing Score', '80% (16/20 or 32/40)'),
+              _buildSection(context, s.aboutSection, [
+                _buildInfoTile(Icons.app_registration, s.appNameLabel, 'ExcelDriving G1'),
+                _buildInfoTile(Icons.code, s.versionLabel, '1.0.0'),
+                _buildInfoTile(Icons.gavel, s.contentSource, s.contentSourceValue),
+                _buildInfoTile(Icons.location_on, s.province, s.provinceValue),
+                _buildInfoTile(Icons.school, s.testPassingScore, s.testPassingScoreValue),
               ]),
             ],
           );
@@ -63,29 +66,46 @@ class SettingsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildThemeTile(BuildContext context, SettingsController settings) {
+  Widget _buildThemeTile(BuildContext context, SettingsController settings, AppStrings s) {
     return ListTile(
       leading: const Icon(Icons.brightness_6),
-      title: const Text('Theme'),
+      title: Text(s.theme),
       trailing: DropdownButton<ThemeMode>(
         value: settings.themeMode,
         onChanged: (value) {
           if (value != null) settings.setThemeMode(value);
         },
         underline: const SizedBox.shrink(),
-        items: const [
-          DropdownMenuItem(value: ThemeMode.system, child: Text('System')),
-          DropdownMenuItem(value: ThemeMode.light, child: Text('Light')),
-          DropdownMenuItem(value: ThemeMode.dark, child: Text('Dark')),
+        items: [
+          DropdownMenuItem(value: ThemeMode.system, child: Text(s.themeSystem)),
+          DropdownMenuItem(value: ThemeMode.light, child: Text(s.themeLight)),
+          DropdownMenuItem(value: ThemeMode.dark, child: Text(s.themeDark)),
         ],
       ),
     );
   }
 
-  Widget _buildDifficultyTile(BuildContext context, SettingsController settings) {
+  Widget _buildLanguageTile(BuildContext context, SettingsController settings, AppStrings s) {
+    return ListTile(
+      leading: const Icon(Icons.language),
+      title: Text(s.languageLabel),
+      trailing: DropdownButton<Language>(
+        value: settings.language,
+        onChanged: (value) {
+          if (value != null) settings.setLanguage(value);
+        },
+        underline: const SizedBox.shrink(),
+        items: Language.values.map((lang) {
+          return DropdownMenuItem(value: lang, child: Text('${lang.flag} ${lang.displayName}'));
+        }).toList(),
+      ),
+    );
+  }
+
+  Widget _buildDifficultyTile(BuildContext context, SettingsController settings, AppStrings s) {
     return ListTile(
       leading: const Icon(Icons.tune),
-      title: const Text('Default Difficulty'),
+      title: Text(s.defaultDifficulty),
       trailing: DropdownButton<Difficulty>(
         value: settings.difficulty,
         onChanged: (value) {
@@ -93,7 +113,7 @@ class SettingsScreen extends StatelessWidget {
         },
         underline: const SizedBox.shrink(),
         items: Difficulty.values.map((d) {
-          return DropdownMenuItem(value: d, child: Text(d.displayName));
+          return DropdownMenuItem(value: d, child: Text(s.difficultyName(d)));
         }).toList(),
       ),
     );
@@ -107,19 +127,19 @@ class SettingsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildClearDataTile(BuildContext context, GamificationController gamification, SmartLearningController smartLearning) {
+  Widget _buildClearDataTile(BuildContext context, GamificationController gamification, SmartLearningController smartLearning, AppStrings s) {
     return ListTile(
       leading: const Icon(Icons.delete_outline, color: Colors.red),
-      title: const Text('Clear All Progress', style: TextStyle(color: Colors.red)),
-      subtitle: const Text('This will reset all XP, streaks, and test history'),
+      title: Text(s.clearAllData, style: const TextStyle(color: Colors.red)),
+      subtitle: Text(s.clearDataMessage),
       onTap: () {
         showDialog(
           context: context,
           builder: (ctx) => AlertDialog(
-            title: const Text('Clear All Progress?'),
-            content: const Text('This permanently deletes your XP, level, streaks, achievements, test history, and smart learning data. This cannot be undone.'),
+            title: Text(s.clearDataConfirm),
+            content: Text(s.clearDataMessage),
             actions: [
-              TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Cancel')),
+              TextButton(onPressed: () => Navigator.pop(ctx), child: Text(s.cancel)),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
                 onPressed: () async {
@@ -128,11 +148,11 @@ class SettingsScreen extends StatelessWidget {
                   if (ctx.mounted) {
                     Navigator.pop(ctx);
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('All progress cleared'), backgroundColor: Colors.red),
+                      SnackBar(content: Text(s.clearAllData), backgroundColor: Colors.red),
                     );
                   }
                 },
-                child: const Text('Clear All', style: TextStyle(color: Colors.white)),
+                child: Text(s.delete, style: const TextStyle(color: Colors.white)),
               ),
             ],
           ),

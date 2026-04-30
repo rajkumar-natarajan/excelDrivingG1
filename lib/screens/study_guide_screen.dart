@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import '../controllers/settings_controller.dart';
+import '../l10n/app_strings.dart';
 import '../models/question.dart';
 import '../widgets/ontario_theme.dart';
 
@@ -7,8 +9,9 @@ class StudyGuideScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final s = AppStrings(SettingsController().language);
     return Scaffold(
-      appBar: AppBar(title: const Text('Study Guide')),
+      appBar: AppBar(title: Text(s.studyGuideTitle)),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
@@ -21,7 +24,7 @@ class StudyGuideScreen extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text('Ontario G1 Study Guide', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18)),
+                      const Text('Ontario G1 Study Guide 🇨🇦', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18)),
                       const SizedBox(height: 4),
                       Text('Key facts from the MTO Driver\'s Handbook', style: TextStyle(color: Colors.white.withAlpha(200), fontSize: 13)),
                     ],

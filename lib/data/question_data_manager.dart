@@ -1,14 +1,25 @@
 import 'dart:math';
 import '../models/question.dart';
+import 'french_question_translations.dart';
 
 /// Manages G1 driving test question data (based on Ontario MTO Driver's Handbook)
 class QuestionDataManager {
   static final QuestionDataManager _instance = QuestionDataManager._internal();
   factory QuestionDataManager() => _instance;
-  QuestionDataManager._internal();
 
   List<Question> _allQuestions = [];
 
+  QuestionDataManager._internal() {
+    _allQuestions.addAll(_createGraduatedLicensingQuestions());
+    _allQuestions.addAll(_createTrafficSignsQuestions());
+    _allQuestions.addAll(_createRulesOfRoadQuestions());
+    _allQuestions.addAll(_createSafeDrivingQuestions());
+    _allQuestions.addAll(_createSharingRoadQuestions());
+    _allQuestions.addAll(_createSpecialSituationsQuestions());
+  }
+
+  /// Re-initialise questions (useful for testing). In normal app usage the
+  /// constructor populates data eagerly so this is rarely needed.
   Future<void> initialize() async {
     _allQuestions = [];
     _allQuestions.addAll(_createGraduatedLicensingQuestions());
@@ -24,7 +35,7 @@ class QuestionDataManager {
   List<Question> getQuestionsByType(QuestionType type) =>
       _allQuestions.where((q) => q.type == type).toList();
 
-  List<Question> getConfiguredQuestions(TestConfiguration config) {
+  List<Question> getConfiguredQuestions(TestConfiguration config, {Language language = Language.english}) {
     var questions = List<Question>.from(_allQuestions);
     if (config.selectedTypes != null && config.selectedTypes!.isNotEmpty) {
       questions = questions.where((q) => config.selectedTypes!.contains(q.type)).toList();
@@ -36,16 +47,16 @@ class QuestionDataManager {
       questions.shuffle(Random());
     }
     final selected = questions.take(config.questionCount).toList();
-    return _shuffleOptions(selected);
+    return _shuffleOptions(_localizeAll(selected, language));
   }
 
-  List<Question> getRandomQuestions(int count, {List<QuestionType>? types}) {
+  List<Question> getRandomQuestions(int count, {List<QuestionType>? types, Language language = Language.english}) {
     var questions = List<Question>.from(_allQuestions);
     if (types != null && types.isNotEmpty) {
       questions = questions.where((q) => types.contains(q.type)).toList();
     }
     questions.shuffle(Random());
-    return _shuffleOptions(questions.take(count).toList());
+    return _shuffleOptions(_localizeAll(questions.take(count).toList(), language));
   }
 
   Question? getQuestionById(String id) {
@@ -56,9 +67,36 @@ class QuestionDataManager {
     }
   }
 
+  /// Returns a localized version of a single question (public helper for smart sessions).
+  Question getLocalizedQuestion(Question q, Language lang) => _localizeQuestion(q, lang);
+
   List<Question> _shuffleOptions(List<Question> questions) {
     final random = Random();
     return questions.map((q) => q.withShuffledOptions(random)).toList();
+  }
+
+  /// Returns a localized version of a question (French if available).
+  /// The correctAnswer index is preserved because options are still in their
+  /// original order — translation happens before shuffling.
+  Question _localizeQuestion(Question q, Language lang) {
+    if (lang == Language.english) return q;
+    final t = kFrenchTranslations[q.id];
+    if (t == null) return q;
+    return Question(
+      id: q.id,
+      stem: t['stem'] as String,
+      options: List<String>.from(t['options'] as List),
+      correctAnswer: q.correctAnswer,
+      explanation: t['explanation'] as String,
+      type: q.type,
+      subType: q.subType,
+      difficulty: q.difficulty,
+    );
+  }
+
+  List<Question> _localizeAll(List<Question> questions, Language lang) {
+    if (lang == Language.english) return questions;
+    return questions.map((q) => _localizeQuestion(q, lang)).toList();
   }
 
   // ==================== GRADUATED LICENSING ====================

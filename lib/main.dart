@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'controllers/settings_controller.dart';
+import 'l10n/app_strings.dart';
 import 'screens/dashboard_screen.dart';
 import 'screens/practice_screen.dart';
 import 'screens/progress_screen.dart';
@@ -9,7 +10,13 @@ import 'screens/settings_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
+  try {
+    await SystemChrome.setPreferredOrientations(
+        [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
+  } catch (_) {
+    // Some iPad/simulator configurations do not support programmatic
+    // orientation locking — silently ignore.
+  }
   runApp(const ExcelDrivingG1App());
 }
 
@@ -103,17 +110,25 @@ class MainNavigation extends StatefulWidget {
 
 class _MainNavigationState extends State<MainNavigation> {
   int _currentIndex = 0;
+  final _settings = SettingsController();
 
-  final List<NavigationDestination> _destinations = const [
-    NavigationDestination(icon: Icon(Icons.home_outlined), selectedIcon: Icon(Icons.home), label: 'Home'),
-    NavigationDestination(icon: Icon(Icons.directions_car_outlined), selectedIcon: Icon(Icons.directions_car), label: 'Practice'),
-    NavigationDestination(icon: Icon(Icons.bar_chart_outlined), selectedIcon: Icon(Icons.bar_chart), label: 'Progress'),
-    NavigationDestination(icon: Icon(Icons.menu_book_outlined), selectedIcon: Icon(Icons.menu_book), label: 'Study'),
-    NavigationDestination(icon: Icon(Icons.settings_outlined), selectedIcon: Icon(Icons.settings), label: 'Settings'),
-  ];
+  @override
+  void initState() {
+    super.initState();
+    _settings.addListener(_onSettingsChanged);
+  }
+
+  @override
+  void dispose() {
+    _settings.removeListener(_onSettingsChanged);
+    super.dispose();
+  }
+
+  void _onSettingsChanged() => setState(() {});
 
   @override
   Widget build(BuildContext context) {
+    final s = AppStrings(_settings.language);
     final screens = [
       DashboardScreen(onNavigate: (index) => setState(() => _currentIndex = index)),
       const PracticeScreen(),
@@ -121,12 +136,19 @@ class _MainNavigationState extends State<MainNavigation> {
       const StudyGuideScreen(),
       const SettingsScreen(),
     ];
+    final destinations = [
+      NavigationDestination(icon: const Icon(Icons.home_outlined), selectedIcon: const Icon(Icons.home), label: s.navHome),
+      NavigationDestination(icon: const Icon(Icons.directions_car_outlined), selectedIcon: const Icon(Icons.directions_car), label: s.navPractice),
+      NavigationDestination(icon: const Icon(Icons.bar_chart_outlined), selectedIcon: const Icon(Icons.bar_chart), label: s.navProgress),
+      NavigationDestination(icon: const Icon(Icons.menu_book_outlined), selectedIcon: const Icon(Icons.menu_book), label: s.navStudy),
+      NavigationDestination(icon: const Icon(Icons.settings_outlined), selectedIcon: const Icon(Icons.settings), label: s.navSettings),
+    ];
     return Scaffold(
       body: IndexedStack(index: _currentIndex, children: screens),
       bottomNavigationBar: NavigationBar(
         selectedIndex: _currentIndex,
         onDestinationSelected: (index) => setState(() => _currentIndex = index),
-        destinations: _destinations,
+        destinations: destinations,
         backgroundColor: Colors.white,
         indicatorColor: const Color(0xFF003F8A).withAlpha(25),
         labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,

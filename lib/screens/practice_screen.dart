@@ -3,6 +3,7 @@ import '../models/question.dart';
 import '../data/question_data_manager.dart';
 import '../controllers/settings_controller.dart';
 import '../controllers/smart_learning_controller.dart';
+import '../l10n/app_strings.dart';
 import '../widgets/ontario_theme.dart';
 import 'test_session_screen.dart';
 
@@ -17,59 +18,70 @@ class _PracticeScreenState extends State<PracticeScreen> {
   late Difficulty _selectedDifficulty;
   Set<QuestionType> _selectedTypes = Set.from(QuestionType.values);
   final SmartLearningController _smartLearning = SmartLearningController();
+  final SettingsController _settings = SettingsController();
 
   @override
   void initState() {
     super.initState();
     _selectedDifficulty = SettingsController().defaultDifficulty;
+    _settings.addListener(_onSettingsChanged);
   }
 
   @override
+  void dispose() {
+    _settings.removeListener(_onSettingsChanged);
+    super.dispose();
+  }
+
+  void _onSettingsChanged() => setState(() {});
+
+  @override
   Widget build(BuildContext context) {
+    final s = AppStrings(_settings.language);
     return Scaffold(
-      appBar: AppBar(title: const Text('Practice')),
+      appBar: AppBar(title: Text(s.practiceTitle)),
       body: OntarioBackground(
         child: ListView(
           padding: const EdgeInsets.all(16),
           children: [
-            _buildConfigurationCard(),
+            _buildConfigurationCard(s),
             const SizedBox(height: 16),
-            _buildSmartPracticeCard(),
+            _buildSmartPracticeCard(s),
             const SizedBox(height: 24),
-            Text('Select Test Type', style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold)),
+            Text(s.selectTestType, style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold)),
             const SizedBox(height: 16),
-            _buildTestTypeCard(context, TestType.quickAssessment, Icons.flash_on, Colors.orange),
+            _buildTestTypeCard(context, TestType.quickAssessment, Icons.flash_on, Colors.orange, s),
             const SizedBox(height: 12),
-            _buildTestTypeCard(context, TestType.standardPractice, Icons.assignment_outlined, Colors.blue),
+            _buildTestTypeCard(context, TestType.standardPractice, Icons.assignment_outlined, Colors.blue, s),
             const SizedBox(height: 12),
-            _buildTestTypeCard(context, TestType.fullMock, Icons.quiz_outlined, Colors.purple),
+            _buildTestTypeCard(context, TestType.fullMock, Icons.quiz_outlined, Colors.purple, s),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildConfigurationCard() {
+  Widget _buildConfigurationCard(AppStrings s) {
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Configuration', style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
+            Text(s.configuration, style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
             const SizedBox(height: 16),
             DropdownButtonFormField<Difficulty>(
               value: _selectedDifficulty,
-              decoration: const InputDecoration(
-                labelText: 'Difficulty Level',
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.tune),
+              decoration: InputDecoration(
+                labelText: s.difficultyLevel,
+                border: const OutlineInputBorder(),
+                prefixIcon: const Icon(Icons.tune),
               ),
-              items: Difficulty.values.map((d) => DropdownMenuItem(value: d, child: Text(d.displayName))).toList(),
+              items: Difficulty.values.map((d) => DropdownMenuItem(value: d, child: Text(s.difficultyName(d)))).toList(),
               onChanged: (v) { if (v != null) setState(() => _selectedDifficulty = v); },
             ),
             const SizedBox(height: 16),
-            Text('Topics', style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600)),
+            Text(s.topics, style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600)),
             const SizedBox(height: 8),
             Wrap(
               spacing: 8,
@@ -77,7 +89,7 @@ class _PracticeScreenState extends State<PracticeScreen> {
               children: QuestionType.values.map((type) {
                 final isSelected = _selectedTypes.contains(type);
                 return FilterChip(
-                  label: Text(type.displayName, style: const TextStyle(fontSize: 12)),
+                  label: Text(s.questionTypeName(type), style: const TextStyle(fontSize: 12)),
                   selected: isSelected,
                   onSelected: (v) {
                     setState(() {
@@ -99,7 +111,7 @@ class _PracticeScreenState extends State<PracticeScreen> {
     );
   }
 
-  Widget _buildSmartPracticeCard() {
+  Widget _buildSmartPracticeCard(AppStrings s) {
     final reviewCount = _smartLearning.reviewCount;
     final bookmarkCount = _smartLearning.bookmarkCount;
     final weakAreas = _smartLearning.getWeakSubTypes();
@@ -110,31 +122,34 @@ class _PracticeScreenState extends State<PracticeScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Smart Practice', style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
+            Text(s.smartPractice, style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
             const SizedBox(height: 12),
             if (reviewCount > 0)
               _buildSmartOption(
                 icon: Icons.replay,
                 color: Colors.orange,
-                title: 'Review Mistakes',
-                subtitle: '$reviewCount questions to revisit',
+                title: s.reviewMistakes,
+                subtitle: s.questionsToRevisit(reviewCount),
                 onTap: () => _startSmartSession('review'),
+                s: s,
               ),
             if (bookmarkCount > 0)
               _buildSmartOption(
                 icon: Icons.bookmark,
                 color: OntarioColors.blue,
-                title: 'Bookmarked Questions',
-                subtitle: '$bookmarkCount saved questions',
+                title: s.bookmarkedQs,
+                subtitle: s.savedQuestions(bookmarkCount),
                 onTap: () => _startSmartSession('bookmarks'),
+                s: s,
               ),
             if (weakAreas.isNotEmpty)
               _buildSmartOption(
                 icon: Icons.trending_down,
                 color: Colors.red,
-                title: 'Weak Area Focus',
-                subtitle: '${weakAreas.length} topics below 70%',
+                title: s.weakAreaFocus,
+                subtitle: s.topicsBelowThreshold(weakAreas.length),
                 onTap: () => _startSmartSession('weak'),
+                s: s,
               ),
             if (reviewCount == 0 && bookmarkCount == 0 && weakAreas.isEmpty)
               Container(
@@ -143,11 +158,11 @@ class _PracticeScreenState extends State<PracticeScreen> {
                   color: Colors.green.shade50,
                   borderRadius: BorderRadius.circular(8),
                 ),
-                child: const Row(
+                child: Row(
                   children: [
-                    Icon(Icons.check_circle, color: Colors.green),
-                    SizedBox(width: 8),
-                    Text('Start practising to unlock smart features!'),
+                    const Icon(Icons.check_circle, color: Colors.green),
+                    const SizedBox(width: 8),
+                    Expanded(child: Text(s.startPractising)),
                   ],
                 ),
               ),
@@ -163,6 +178,7 @@ class _PracticeScreenState extends State<PracticeScreen> {
     required String title,
     required String subtitle,
     required VoidCallback onTap,
+    required AppStrings s,
   }) {
     return ListTile(
       contentPadding: EdgeInsets.zero,
@@ -182,12 +198,12 @@ class _PracticeScreenState extends State<PracticeScreen> {
           padding: const EdgeInsets.symmetric(horizontal: 12),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         ),
-        child: const Text('Start', style: TextStyle(fontSize: 12)),
+        child: Text(s.start, style: const TextStyle(fontSize: 12)),
       ),
     );
   }
 
-  Widget _buildTestTypeCard(BuildContext context, TestType type, IconData icon, Color color) {
+  Widget _buildTestTypeCard(BuildContext context, TestType type, IconData icon, Color color, AppStrings s) {
     return Card(
       child: InkWell(
         onTap: () => _startTest(type),
@@ -206,15 +222,15 @@ class _PracticeScreenState extends State<PracticeScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(type.displayName, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                    Text(s.testTypeName(type), style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
                     const SizedBox(height: 4),
-                    Text(type.description, style: TextStyle(color: Colors.grey.shade600, fontSize: 13)),
+                    Text(s.testTypeDesc(type), style: TextStyle(color: Colors.grey.shade600, fontSize: 13)),
                     const SizedBox(height: 8),
                     Row(
                       children: [
-                        _buildBadge('${type.questionCount} questions', Icons.quiz_outlined, color),
+                        _buildBadge(s.questions(type.questionCount), Icons.quiz_outlined, color),
                         const SizedBox(width: 8),
-                        _buildBadge('${type.timeInMinutes} min', Icons.timer_outlined, color),
+                        _buildBadge(s.minutes(type.timeInMinutes), Icons.timer_outlined, color),
                       ],
                     ),
                   ],
@@ -248,6 +264,7 @@ class _PracticeScreenState extends State<PracticeScreen> {
 
   void _startTest(TestType testType) {
     final dataManager = QuestionDataManager();
+    final lang = _settings.language;
     final config = TestConfiguration(
       testType: testType,
       questionCount: testType.questionCount,
@@ -255,8 +272,14 @@ class _PracticeScreenState extends State<PracticeScreen> {
       difficulty: _selectedDifficulty,
       selectedTypes: _selectedTypes.toList(),
     );
-    final questions = dataManager.getConfiguredQuestions(config);
+    final questions = dataManager.getConfiguredQuestions(config, language: lang);
     if (!mounted) return;
+    if (questions.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(AppStrings(lang).noQuestionsAvailable)),
+      );
+      return;
+    }
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -267,6 +290,7 @@ class _PracticeScreenState extends State<PracticeScreen> {
 
   void _startSmartSession(String type) {
     final dataManager = QuestionDataManager();
+    final lang = _settings.language;
     List<Question> questions = [];
     if (type == 'review') {
       final ids = _smartLearning.getQuestionsForReview();
@@ -278,8 +302,12 @@ class _PracticeScreenState extends State<PracticeScreen> {
       final weakSubTypes = _smartLearning.getWeakSubTypes();
       questions = dataManager.allQuestions.where((q) => weakSubTypes.contains(q.subType)).toList();
     }
+    // Apply French translations
+    if (lang != Language.english) {
+      questions = questions.map((q) => dataManager.getLocalizedQuestion(q, lang)).toList();
+    }
     if (questions.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('No questions available')));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(AppStrings(lang).noQuestionsAvailable)));
       return;
     }
     questions.shuffle();

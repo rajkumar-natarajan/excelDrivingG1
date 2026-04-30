@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import '../controllers/settings_controller.dart';
 import '../controllers/smart_learning_controller.dart';
+import '../l10n/app_strings.dart';
 import '../models/question.dart' hide PerformanceStats, TestSessionRecord, TrendPoint, TimeStats;
 
 class ProgressScreen extends StatefulWidget {
@@ -12,6 +14,7 @@ class ProgressScreen extends StatefulWidget {
 class _ProgressScreenState extends State<ProgressScreen> with SingleTickerProviderStateMixin {
   final SmartLearningController _smartLearning = SmartLearningController();
   late TabController _tabController;
+  AppStrings get _s => AppStrings(SettingsController().language);
 
   @override
   void initState() {
@@ -35,10 +38,10 @@ class _ProgressScreenState extends State<ProgressScreen> with SingleTickerProvid
 
         return Scaffold(
           appBar: AppBar(
-            title: const Text('Progress'),
+            title: Text(_s.progressTitle),
             bottom: TabBar(
               controller: _tabController,
-              tabs: const [Tab(text: 'Overview'), Tab(text: 'Trends'), Tab(text: 'Time Stats')],
+              tabs: [Tab(text: _s.overview), Tab(text: _s.trends), Tab(text: _s.timeStats)],
             ),
           ),
           body: TabBarView(
@@ -62,7 +65,7 @@ class _ProgressScreenState extends State<ProgressScreen> with SingleTickerProvid
         const SizedBox(height: 16),
         _buildSmartLearningCard(context),
         const SizedBox(height: 24),
-        Text('Performance by Category', style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold)),
+        Text(_s.performanceByCategory, style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold)),
         const SizedBox(height: 16),
         _buildCategoryProgress(context, QuestionType.graduatedLicensing, Colors.blue),
         _buildCategoryProgress(context, QuestionType.trafficSigns, Colors.red),
@@ -71,7 +74,7 @@ class _ProgressScreenState extends State<ProgressScreen> with SingleTickerProvid
         _buildCategoryProgress(context, QuestionType.sharingRoad, Colors.teal),
         _buildCategoryProgress(context, QuestionType.specialSituations, Colors.orange),
         const SizedBox(height: 24),
-        Text('Weak Areas', style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold)),
+        Text(_s.weakAreas, style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold)),
         const SizedBox(height: 16),
         _buildWeakAreasSection(context),
       ],
@@ -88,23 +91,23 @@ class _ProgressScreenState extends State<ProgressScreen> with SingleTickerProvid
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            Text('Overall Performance', style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
+            Text(_s.overallPerformance, style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
             const SizedBox(height: 16),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                _buildStatColumn('$totalAttempts', 'Questions\nAnswered', Icons.quiz, Colors.blue),
-                _buildStatColumn('$totalCorrect', 'Correct\nAnswers', Icons.check_circle, Colors.green),
-                _buildStatColumn('${overallAccuracy.toInt()}%', 'Overall\nAccuracy', Icons.percent, _getAccuracyColor(overallAccuracy)),
+                _buildStatColumn('$totalAttempts', _s.questionsAnswered, Icons.quiz, Colors.blue),
+                _buildStatColumn('$totalCorrect', _s.correctAnswers, Icons.check_circle, Colors.green),
+                _buildStatColumn('${overallAccuracy.toInt()}%', _s.overallAccuracy, Icons.percent, _getAccuracyColor(overallAccuracy)),
               ],
             ),
             const SizedBox(height: 16),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                _buildStatColumn('${_smartLearning.masteredCount}', 'Mastered', Icons.star, Colors.amber),
-                _buildStatColumn('${_smartLearning.reviewCount}', 'To Review', Icons.replay, Colors.orange),
-                _buildStatColumn('${_smartLearning.bookmarkCount}', 'Bookmarks', Icons.bookmark, Colors.purple),
+                _buildStatColumn('${_smartLearning.masteredCount}', _s.mastered, Icons.star, Colors.amber),
+                _buildStatColumn('${_smartLearning.reviewCount}', _s.toReview, Icons.replay, Colors.orange),
+                _buildStatColumn('${_smartLearning.bookmarkCount}', _s.bookmarks, Icons.bookmark, Colors.purple),
               ],
             ),
           ],
@@ -166,7 +169,7 @@ class _ProgressScreenState extends State<ProgressScreen> with SingleTickerProvid
         children: [
           SizedBox(
             width: 130,
-            child: Text(type.displayName, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500)),
+            child: Text(_s.questionTypeName(type), style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500)),
           ),
           Expanded(
             child: Column(
@@ -257,7 +260,7 @@ class _ProgressScreenState extends State<ProgressScreen> with SingleTickerProvid
       children: [
         _buildAccuracyTrendChart(context, trend),
         const SizedBox(height: 24),
-        Text('Recent Test Sessions', style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold)),
+        Text(_s.recentTestSessions, style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold)),
         const SizedBox(height: 16),
         if (recentSessions.isEmpty)
           const Card(child: Padding(padding: EdgeInsets.all(20), child: Center(child: Text('No tests completed yet'))))

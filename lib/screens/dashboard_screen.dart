@@ -1,8 +1,8 @@
-import 'dart:math';
 import 'package:flutter/material.dart';
 import '../controllers/gamification_controller.dart';
 import '../controllers/settings_controller.dart';
 import '../data/question_data_manager.dart';
+import '../l10n/app_strings.dart';
 import '../models/question.dart';
 import '../widgets/ontario_theme.dart';
 import 'achievements_screen.dart';
@@ -39,19 +39,17 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   void _startCategoryPractice(QuestionType type) {
     final dataManager = QuestionDataManager();
-    final questions = dataManager.getQuestionsByType(type);
+    final lang = _settings.language;
+    final questions = dataManager.getRandomQuestions(10, types: [type], language: lang);
     if (questions.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('No questions available')),
+        SnackBar(content: Text(AppStrings(lang).noQuestionsAvailable)),
       );
       return;
     }
-    final random = Random();
-    final shuffled = List<Question>.from(questions)..shuffle(random);
-    final selectedQuestions = shuffled.take(10).map((q) => q.withShuffledOptions(random)).toList();
     final config = TestConfiguration(
       testType: TestType.standardPractice,
-      questionCount: selectedQuestions.length,
+      questionCount: questions.length,
       timeInMinutes: 10,
       difficulty: _settings.defaultDifficulty,
       selectedTypes: [type],
@@ -59,13 +57,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => TestSessionScreen(configuration: config, questions: selectedQuestions),
+        builder: (context) => TestSessionScreen(configuration: config, questions: questions),
       ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    final s = AppStrings(_settings.language);
     return Scaffold(
       appBar: AppBar(
         title: Row(
@@ -74,7 +73,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             const Text('🚗', style: TextStyle(fontSize: 22)),
             const SizedBox(width: 8),
             Text(
-              'ExcelDriving G1',
+              s.appTitle,
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 color: Theme.of(context).colorScheme.onSurface,
@@ -86,7 +85,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         actions: [
           IconButton(
             icon: const Icon(Icons.emoji_events),
-            tooltip: 'Achievements',
+            tooltip: s.achievements,
             onPressed: () => Navigator.push(
               context,
               MaterialPageRoute(builder: (_) => const AchievementsScreen()),
@@ -98,30 +97,30 @@ class _DashboardScreenState extends State<DashboardScreen> {
         child: ListView(
           padding: const EdgeInsets.all(16),
           children: [
-            _buildGamificationCard(context),
+            _buildGamificationCard(context, s),
             const SizedBox(height: 16),
-            _buildWelcomeCard(context),
+            _buildWelcomeCard(context, s),
             const SizedBox(height: 24),
             Text(
-              'Quick Actions',
+              s.quickActions,
               style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16),
-            _buildQuickActionGrid(context),
+            _buildQuickActionGrid(context, s),
             const SizedBox(height: 24),
             Text(
-              'Study by Topic',
+              s.studyByTopic,
               style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16),
-            _buildTopicCards(context),
+            _buildTopicCards(context, s),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildGamificationCard(BuildContext context) {
+  Widget _buildGamificationCard(BuildContext context, AppStrings s) {
     final stats = _gamification.getStats();
     return Card(
       child: InkWell(
@@ -153,7 +152,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Level ${stats.currentLevel} Driver',
+                      s.levelDriver(stats.currentLevel),
                       style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 4),
@@ -168,7 +167,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      '${stats.xpToNextLevel} XP to next level',
+                      s.xpToNextLevel(stats.xpToNextLevel),
                       style: TextStyle(fontSize: 11, color: Colors.grey.shade600),
                     ),
                   ],
@@ -188,7 +187,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       ),
                     ],
                   ),
-                  Text('streak', style: TextStyle(fontSize: 10, color: Colors.grey.shade600)),
+                  Text(s.streak, style: TextStyle(fontSize: 10, color: Colors.grey.shade600)),
                 ],
               ),
             ],
@@ -198,7 +197,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
-  Widget _buildWelcomeCard(BuildContext context) {
+  Widget _buildWelcomeCard(BuildContext context, AppStrings s) {
     final dataManager = QuestionDataManager();
     final totalQ = dataManager.allQuestions.length;
 
@@ -206,13 +205,15 @@ class _DashboardScreenState extends State<DashboardScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'Ontario G1 Test Prep 🇨🇦',
-            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20),
+          Text(
+            s.isFr ? 'Préparation à l\'examen G1 de l\'Ontario 🇨🇦' : 'Ontario G1 Test Prep 🇨🇦',
+            style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20),
           ),
           const SizedBox(height: 8),
           Text(
-            'Master all $totalQ questions from the official MTO Driver\'s Handbook.',
+            s.isFr
+                ? 'Maîtrisez les $totalQ questions du Manuel du conducteur MTO officiel.'
+                : 'Master all $totalQ questions from the official MTO Driver\'s Handbook.',
             style: const TextStyle(color: Colors.white70, height: 1.4),
           ),
           const SizedBox(height: 12),
@@ -223,19 +224,19 @@ class _DashboardScreenState extends State<DashboardScreen> {
               foregroundColor: OntarioColors.blue,
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
             ),
-            child: const Text('Start Practising'),
+            child: Text(s.isFr ? 'Commencer à pratiquer' : 'Start Practising'),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildQuickActionGrid(BuildContext context) {
+  Widget _buildQuickActionGrid(BuildContext context, AppStrings s) {
     final actions = [
-      ('Quick Check\n(10 Q)', Icons.flash_on, Colors.orange, TestType.quickAssessment),
-      ('Practice Test\n(20 Q)', Icons.assignment, Colors.blue, TestType.standardPractice),
-      ('Mock G1 Test\n(40 Q)', Icons.quiz, Colors.purple, TestType.fullMock),
-      ('Weak Areas', Icons.trending_up, Colors.red, null),
+      (s.isFr ? 'Vérif. rapide\n(10 Q)' : 'Quick Check\n(10 Q)', Icons.flash_on, Colors.orange, TestType.quickAssessment),
+      (s.isFr ? 'Test pratique\n(20 Q)' : 'Practice Test\n(20 Q)', Icons.assignment, Colors.blue, TestType.standardPractice),
+      (s.isFr ? 'Exam G1 simulé\n(40 Q)' : 'Mock G1 Test\n(40 Q)', Icons.quiz, Colors.purple, TestType.fullMock),
+      (s.isFr ? 'Points faibles' : 'Weak Areas', Icons.trending_up, Colors.red, null),
     ];
 
     return GridView.count(
@@ -279,14 +280,20 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
-  Widget _buildTopicCards(BuildContext context) {
+  Widget _buildTopicCards(BuildContext context, AppStrings s) {
     final topics = [
-      (QuestionType.graduatedLicensing, Icons.school, Colors.blue, 'Learn G1/G2 rules'),
-      (QuestionType.trafficSigns, Icons.stop, Colors.red, 'Signs & signals'),
-      (QuestionType.rulesOfRoad, Icons.rule, Colors.purple, 'Speed, turns & parking'),
-      (QuestionType.safeDriving, Icons.shield, Colors.green, 'Alcohol, distractions'),
-      (QuestionType.sharingRoad, Icons.people, Colors.teal, 'Cyclists, pedestrians'),
-      (QuestionType.specialSituations, Icons.warning_amber, Colors.orange, 'Night, weather, highways'),
+      (QuestionType.graduatedLicensing, Icons.school, Colors.blue,
+          s.isFr ? 'Règles G1/G2' : 'Learn G1/G2 rules'),
+      (QuestionType.trafficSigns, Icons.stop, Colors.red,
+          s.isFr ? 'Panneaux & signaux' : 'Signs & signals'),
+      (QuestionType.rulesOfRoad, Icons.rule, Colors.purple,
+          s.isFr ? 'Vitesse, virages & stationnement' : 'Speed, turns & parking'),
+      (QuestionType.safeDriving, Icons.shield, Colors.green,
+          s.isFr ? 'Alcool, distractions' : 'Alcohol, distractions'),
+      (QuestionType.sharingRoad, Icons.people, Colors.teal,
+          s.isFr ? 'Cyclistes, piétons' : 'Cyclists, pedestrians'),
+      (QuestionType.specialSituations, Icons.warning_amber, Colors.orange,
+          s.isFr ? 'Nuit, météo, autoroutes' : 'Night, weather, highways'),
     ];
 
     return Column(
@@ -306,7 +313,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 ),
                 child: Icon(t.$2, color: t.$3),
               ),
-              title: Text(t.$1.displayName, style: const TextStyle(fontWeight: FontWeight.w600)),
+              title: Text(s.questionTypeName(t.$1), style: const TextStyle(fontWeight: FontWeight.w600)),
               subtitle: Text(t.$4, style: TextStyle(fontSize: 12, color: Colors.grey.shade600)),
               trailing: Row(
                 mainAxisSize: MainAxisSize.min,
@@ -335,13 +342,20 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   void _startTest(TestType testType) {
     final dataManager = QuestionDataManager();
+    final lang = _settings.language;
     final config = TestConfiguration(
       testType: testType,
       questionCount: testType.questionCount,
       timeInMinutes: testType.timeInMinutes,
       difficulty: _settings.defaultDifficulty,
     );
-    final questions = dataManager.getConfiguredQuestions(config);
+    final questions = dataManager.getConfiguredQuestions(config, language: lang);
+    if (questions.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(AppStrings(lang).noQuestionsAvailable)),
+      );
+      return;
+    }
     Navigator.push(
       context,
       MaterialPageRoute(
