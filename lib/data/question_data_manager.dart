@@ -3,6 +3,8 @@ import '../models/question.dart';
 import 'french_question_translations.dart';
 import 'french_translations_extra.dart';
 import 'question_bank_extra.dart';
+import 'question_bank_extra2.dart';
+import 'french_translations_extra2.dart';
 
 /// Manages G1 driving test question data (based on Ontario MTO Driver's Handbook)
 class QuestionDataManager {
@@ -94,7 +96,8 @@ class QuestionDataManager {
   /// original order — translation happens before shuffling.
   Question _localizeQuestion(Question q, Language lang) {
     if (lang == Language.english) return q;
-    final t = kFrenchTranslations[q.id] ?? kFrenchTranslationsExtra[q.id];
+    final t = kFrenchTranslations[q.id] ?? kFrenchTranslationsExtra[q.id] ??
+            kFrenchTranslationsExtra2[q.id];
     if (t == null) return q;
     return Question(
       id: q.id,
