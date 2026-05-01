@@ -26,6 +26,12 @@ class QuestionDataManager {
     _allQuestions.addAll(QuestionBankExtra.safeDriving());
     _allQuestions.addAll(QuestionBankExtra.sharingRoad());
     _allQuestions.addAll(QuestionBankExtra.specialSituations());
+    _allQuestions.addAll(QuestionBankExtra2.graduatedLicensing());
+    _allQuestions.addAll(QuestionBankExtra2.trafficSigns());
+    _allQuestions.addAll(QuestionBankExtra2.rulesOfRoad());
+    _allQuestions.addAll(QuestionBankExtra2.safeDriving());
+    _allQuestions.addAll(QuestionBankExtra2.sharingRoad());
+    _allQuestions.addAll(QuestionBankExtra2.specialSituations());
   }
 
   /// Re-initialise questions (useful for testing). In normal app usage the
@@ -44,6 +50,12 @@ class QuestionDataManager {
     _allQuestions.addAll(QuestionBankExtra.safeDriving());
     _allQuestions.addAll(QuestionBankExtra.sharingRoad());
     _allQuestions.addAll(QuestionBankExtra.specialSituations());
+    _allQuestions.addAll(QuestionBankExtra2.graduatedLicensing());
+    _allQuestions.addAll(QuestionBankExtra2.trafficSigns());
+    _allQuestions.addAll(QuestionBankExtra2.rulesOfRoad());
+    _allQuestions.addAll(QuestionBankExtra2.safeDriving());
+    _allQuestions.addAll(QuestionBankExtra2.sharingRoad());
+    _allQuestions.addAll(QuestionBankExtra2.specialSituations());
   }
 
   List<Question> get allQuestions => List.from(_allQuestions);
