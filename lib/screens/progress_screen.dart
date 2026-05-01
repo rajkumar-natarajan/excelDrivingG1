@@ -96,18 +96,18 @@ class _ProgressScreenState extends State<ProgressScreen> with SingleTickerProvid
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                _buildStatColumn('$totalAttempts', _s.questionsAnswered, Icons.quiz, Colors.blue),
-                _buildStatColumn('$totalCorrect', _s.correctAnswers, Icons.check_circle, Colors.green),
-                _buildStatColumn('${overallAccuracy.toInt()}%', _s.overallAccuracy, Icons.percent, _getAccuracyColor(overallAccuracy)),
+              _buildStatColumn(context, '$totalAttempts', _s.questionsAnswered, Icons.quiz, Colors.blue),
+              _buildStatColumn(context, '$totalCorrect', _s.correctAnswers, Icons.check_circle, Colors.green),
+              _buildStatColumn(context, '${overallAccuracy.toInt()}%', _s.overallAccuracy, Icons.percent, _getAccuracyColor(overallAccuracy)),
               ],
             ),
             const SizedBox(height: 16),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                _buildStatColumn('${_smartLearning.masteredCount}', _s.mastered, Icons.star, Colors.amber),
-                _buildStatColumn('${_smartLearning.reviewCount}', _s.toReview, Icons.replay, Colors.orange),
-                _buildStatColumn('${_smartLearning.bookmarkCount}', _s.bookmarks, Icons.bookmark, Colors.purple),
+              _buildStatColumn(context, '${_smartLearning.masteredCount}', _s.mastered, Icons.star, Colors.amber),
+              _buildStatColumn(context, '${_smartLearning.reviewCount}', _s.toReview, Icons.replay, Colors.orange),
+              _buildStatColumn(context, '${_smartLearning.bookmarkCount}', _s.bookmarks, Icons.bookmark, Colors.purple),
               ],
             ),
           ],
@@ -116,13 +116,13 @@ class _ProgressScreenState extends State<ProgressScreen> with SingleTickerProvid
     );
   }
 
-  Widget _buildStatColumn(String value, String label, IconData icon, Color color) {
+  Widget _buildStatColumn(BuildContext context, String value, String label, IconData icon, Color color) {
     return Column(
       children: [
         Icon(icon, color: color, size: 28),
         const SizedBox(height: 4),
         Text(value, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20, color: color)),
-        Text(label, style: const TextStyle(fontSize: 11, color: Colors.grey), textAlign: TextAlign.center),
+        Text(label, style: TextStyle(fontSize: 11, color: Theme.of(context).colorScheme.onSurface.withAlpha(153)), textAlign: TextAlign.center),
       ],
     );
   }
@@ -216,7 +216,7 @@ class _ProgressScreenState extends State<ProgressScreen> with SingleTickerProvid
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Text('No weak areas!', style: TextStyle(fontWeight: FontWeight.bold)),
-                    Text('Keep it up — you\'re doing great!', style: TextStyle(color: Colors.grey.shade600, fontSize: 13)),
+                    Text('Keep it up — you\'re doing great!', style: TextStyle(color: Theme.of(context).colorScheme.onSurface.withAlpha(153), fontSize: 13)),
                   ],
                 ),
               ),
@@ -237,7 +237,7 @@ class _ProgressScreenState extends State<ProgressScreen> with SingleTickerProvid
             trailing: Container(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
               decoration: BoxDecoration(
-                color: Colors.red.shade50,
+              color: Colors.red.withAlpha(20),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Text(
@@ -279,7 +279,7 @@ class _ProgressScreenState extends State<ProgressScreen> with SingleTickerProvid
             children: [
               const Icon(Icons.trending_up, color: Colors.grey, size: 48),
               const SizedBox(height: 8),
-              Text('Complete some tests to see trends', style: TextStyle(color: Colors.grey.shade600)),
+              Text('Complete some tests to see trends', style: TextStyle(color: Theme.of(context).colorScheme.onSurface.withAlpha(153))),
             ],
           ),
         ),
@@ -349,7 +349,7 @@ class _ProgressScreenState extends State<ProgressScreen> with SingleTickerProvid
         ),
         trailing: Text(
           _formatDuration(session.totalTimeSeconds),
-          style: TextStyle(color: Colors.grey.shade600, fontSize: 12),
+          style: TextStyle(color: Theme.of(context).colorScheme.onSurface.withAlpha(153), fontSize: 12),
         ),
       ),
     );

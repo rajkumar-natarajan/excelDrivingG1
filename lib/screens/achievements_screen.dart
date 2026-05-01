@@ -89,10 +89,10 @@ class AchievementsScreen extends StatelessWidget {
     return AnimatedContainer(
       duration: const Duration(milliseconds: 300),
       decoration: BoxDecoration(
-        color: isUnlocked ? rarityColor.withAlpha(15) : Colors.grey.shade50,
+        color: isUnlocked ? rarityColor.withAlpha(15) : Theme.of(context).colorScheme.surfaceContainerHighest,
         borderRadius: BorderRadius.circular(14),
         border: Border.all(
-          color: isUnlocked ? rarityColor.withAlpha(80) : Colors.grey.shade200,
+          color: isUnlocked ? rarityColor.withAlpha(80) : Theme.of(context).colorScheme.outlineVariant,
           width: 1.5,
         ),
         boxShadow: isUnlocked
@@ -107,13 +107,13 @@ class AchievementsScreen extends StatelessWidget {
               width: 56,
               height: 56,
               decoration: BoxDecoration(
-                color: isUnlocked ? rarityColor.withAlpha(25) : Colors.grey.shade200,
+                color: isUnlocked ? rarityColor.withAlpha(25) : Theme.of(context).colorScheme.outlineVariant.withAlpha(76),
                 shape: BoxShape.circle,
               ),
               child: Center(
                 child: Text(
                   isUnlocked ? achievement.icon : '🔒',
-                  style: TextStyle(fontSize: 26, color: isUnlocked ? null : Colors.grey),
+                  style: TextStyle(fontSize: 26, color: isUnlocked ? null : Theme.of(context).colorScheme.onSurface.withAlpha(102)),
                 ),
               ),
             ),
@@ -130,21 +130,21 @@ class AchievementsScreen extends StatelessWidget {
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 15,
-                            color: isUnlocked ? Colors.black87 : Colors.grey,
+                            color: isUnlocked ? Theme.of(context).colorScheme.onSurface : Theme.of(context).colorScheme.onSurface.withAlpha(128),
                           ),
                         ),
                       ),
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                         decoration: BoxDecoration(
-                          color: isUnlocked ? rarityColor.withAlpha(20) : Colors.grey.shade200,
+                          color: isUnlocked ? rarityColor.withAlpha(20) : Theme.of(context).colorScheme.outlineVariant.withAlpha(76),
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: Text(
                           _rarityName(achievement.rarity),
                           style: TextStyle(
                             fontSize: 11,
-                            color: isUnlocked ? rarityColor : Colors.grey,
+                            color: isUnlocked ? rarityColor : Theme.of(context).colorScheme.onSurface.withAlpha(128),
                             fontWeight: FontWeight.w600,
                           ),
                         ),
@@ -154,7 +154,7 @@ class AchievementsScreen extends StatelessWidget {
                   const SizedBox(height: 4),
                   Text(
                     isUnlocked ? achievement.description : s.keepPractising,
-                    style: TextStyle(fontSize: 12, color: isUnlocked ? Colors.grey.shade600 : Colors.grey.shade400),
+                    style: TextStyle(fontSize: 12, color: isUnlocked ? Theme.of(context).colorScheme.onSurface.withAlpha(153) : Theme.of(context).colorScheme.onSurface.withAlpha(102)),
                   ),
                   if (isUnlocked) ...[
                     const SizedBox(height: 6),

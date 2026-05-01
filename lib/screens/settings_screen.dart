@@ -37,11 +37,11 @@ class SettingsScreen extends StatelessWidget {
               ]),
               const SizedBox(height: 16),
               _buildSection(context, s.aboutSection, [
-                _buildInfoTile(Icons.app_registration, s.appNameLabel, 'ExcelDriving G1'),
-                _buildInfoTile(Icons.code, s.versionLabel, '1.0.0'),
-                _buildInfoTile(Icons.gavel, s.contentSource, s.contentSourceValue),
-                _buildInfoTile(Icons.location_on, s.province, s.provinceValue),
-                _buildInfoTile(Icons.school, s.testPassingScore, s.testPassingScoreValue),
+                _buildInfoTile(context, Icons.app_registration, s.appNameLabel, 'ExcelDriving G1'),
+                _buildInfoTile(context, Icons.code, s.versionLabel, '1.0.0'),
+                _buildInfoTile(context, Icons.gavel, s.contentSource, s.contentSourceValue),
+                _buildInfoTile(context, Icons.location_on, s.province, s.provinceValue),
+                _buildInfoTile(context, Icons.school, s.testPassingScore, s.testPassingScoreValue),
               ]),
             ],
           );
@@ -56,7 +56,7 @@ class SettingsScreen extends StatelessWidget {
       children: [
         Padding(
           padding: const EdgeInsets.only(left: 4, bottom: 8),
-          child: Text(title, style: Theme.of(context).textTheme.titleSmall?.copyWith(color: const Color(0xFF003F8A), fontWeight: FontWeight.bold, letterSpacing: 1.2)),
+          child: Text(title, style: Theme.of(context).textTheme.titleSmall?.copyWith(color: Theme.of(context).colorScheme.primary, fontWeight: FontWeight.bold, letterSpacing: 1.2)),
         ),
         Card(
           margin: EdgeInsets.zero,
@@ -119,13 +119,13 @@ class SettingsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildInfoTile(IconData icon, String label, String value) {
+  Widget _buildInfoTile(BuildContext context, IconData icon, String label, String value) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Icon(icon, color: Colors.grey.shade600, size: 22),
+          Icon(icon, color: Theme.of(context).colorScheme.onSurface.withAlpha(153), size: 22),
           const SizedBox(width: 16),
           Expanded(
             flex: 2,
@@ -136,7 +136,7 @@ class SettingsScreen extends StatelessWidget {
             flex: 3,
             child: Text(
               value,
-              style: const TextStyle(color: Colors.grey, fontSize: 13),
+              style: TextStyle(color: Theme.of(context).colorScheme.onSurface.withAlpha(153), fontSize: 13),
               textAlign: TextAlign.right,
             ),
           ),

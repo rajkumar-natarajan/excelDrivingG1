@@ -33,7 +33,7 @@ class _ReviewScreenState extends State<ReviewScreen> {
               label: Text(s.incorrectOnly),
               selected: _showOnlyIncorrect,
               onSelected: (v) => setState(() => _showOnlyIncorrect = v),
-              selectedColor: Colors.red.shade100,
+              selectedColor: Colors.red.withAlpha(40),
             ),
           ),
         ],
@@ -78,7 +78,7 @@ class _ReviewScreenState extends State<ReviewScreen> {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                   decoration: BoxDecoration(
-                    color: isCorrect ? Colors.green.shade100 : Colors.red.shade100,
+                    color: isCorrect ? Colors.green.withAlpha(30) : Colors.red.withAlpha(30),
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: Row(
@@ -94,7 +94,7 @@ class _ReviewScreenState extends State<ReviewScreen> {
                         'Q$questionNumber',
                         style: TextStyle(
                           fontSize: 12,
-                          color: isCorrect ? Colors.green.shade700 : Colors.red.shade700,
+                          color: isCorrect ? Colors.green : Colors.red,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -105,12 +105,12 @@ class _ReviewScreenState extends State<ReviewScreen> {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
-                    color: Colors.blue.shade50,
+                    color: Theme.of(context).colorScheme.primaryContainer.withAlpha(60),
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: Text(
                     s.questionTypeName(question.type),
-                    style: TextStyle(fontSize: 11, color: Colors.blue.shade700),
+                    style: TextStyle(fontSize: 11, color: Theme.of(context).colorScheme.primary),
                   ),
                 ),
               ],
@@ -125,13 +125,13 @@ class _ReviewScreenState extends State<ReviewScreen> {
               final isUserAnswer = answer.selectedOption == i;
               final isCorrectAnswer = question.correctAnswer == i;
               Color bgColor = Colors.transparent;
-              Color borderColor = Colors.grey.shade200;
+              Color borderColor = Theme.of(context).colorScheme.outlineVariant;
 
               if (isCorrectAnswer) {
-                bgColor = Colors.green.shade50;
+                bgColor = Colors.green.withAlpha(25);
                 borderColor = Colors.green;
               } else if (isUserAnswer && !isCorrect) {
-                bgColor = Colors.red.shade50;
+                bgColor = Colors.red.withAlpha(25);
                 borderColor = Colors.red;
               }
 
@@ -151,10 +151,10 @@ class _ReviewScreenState extends State<ReviewScreen> {
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           color: isCorrectAnswer
-                              ? Colors.green.shade700
+                              ? Colors.green
                               : isUserAnswer && !isCorrect
-                                  ? Colors.red.shade700
-                                  : Colors.grey.shade600,
+                                  ? Colors.red
+                                  : Theme.of(context).colorScheme.onSurface.withAlpha(153),
                         ),
                       ),
                       const SizedBox(width: 8),
@@ -164,10 +164,10 @@ class _ReviewScreenState extends State<ReviewScreen> {
                           style: TextStyle(
                             fontSize: 13,
                             color: isCorrectAnswer
-                                ? Colors.green.shade800
+                                ? Colors.green
                                 : isUserAnswer && !isCorrect
-                                    ? Colors.red.shade800
-                                    : Colors.black87,
+                                    ? Colors.red
+                                    : Theme.of(context).colorScheme.onSurface,
                           ),
                         ),
                       ),
@@ -182,18 +182,18 @@ class _ReviewScreenState extends State<ReviewScreen> {
             Container(
               padding: const EdgeInsets.all(10),
               decoration: BoxDecoration(
-                color: Colors.blue.shade50,
+                color: Theme.of(context).colorScheme.primaryContainer.withAlpha(60),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Icon(Icons.lightbulb_outline, color: Colors.blue.shade600, size: 16),
+                  Icon(Icons.lightbulb_outline, color: Theme.of(context).colorScheme.primary, size: 16),
                   const SizedBox(width: 8),
                   Expanded(
                     child: Text(
                       question.explanation,
-                      style: TextStyle(fontSize: 12, color: Colors.blue.shade900, height: 1.4),
+                      style: TextStyle(fontSize: 12, color: Theme.of(context).colorScheme.onSurface, height: 1.4),
                     ),
                   ),
                 ],

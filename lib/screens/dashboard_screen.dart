@@ -168,7 +168,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     const SizedBox(height: 4),
                     Text(
                       s.xpToNextLevel(stats.xpToNextLevel),
-                      style: TextStyle(fontSize: 11, color: Colors.grey.shade600),
+                      style: TextStyle(fontSize: 11, color: Theme.of(context).colorScheme.onSurface.withAlpha(153)),
                     ),
                   ],
                 ),
@@ -187,7 +187,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       ),
                     ],
                   ),
-                  Text(s.streak, style: TextStyle(fontSize: 10, color: Colors.grey.shade600)),
+                  Text(s.streak, style: TextStyle(fontSize: 10, color: Theme.of(context).colorScheme.onSurface.withAlpha(153))),
                 ],
               ),
             ],
@@ -314,7 +314,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 child: Icon(t.$2, color: t.$3),
               ),
               title: Text(s.questionTypeName(t.$1), style: const TextStyle(fontWeight: FontWeight.w600)),
-              subtitle: Text(t.$4, style: TextStyle(fontSize: 12, color: Colors.grey.shade600)),
+              subtitle: Text(t.$4, style: TextStyle(fontSize: 12, color: Theme.of(context).colorScheme.onSurface.withAlpha(153))),
               trailing: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [

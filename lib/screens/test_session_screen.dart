@@ -307,21 +307,21 @@ class _TestSessionScreenState extends State<TestSessionScreen> {
                     final isCorrect = index == question.correctAnswer;
                     final hasAnswered = selectedAnswer != null;
 
-                    Color cardColor = Colors.white;
-                    Color borderColor = Colors.grey.shade200;
-                    Color textColor = Colors.black87;
+                    Color cardColor = Theme.of(context).colorScheme.surface;
+                    Color borderColor = Theme.of(context).colorScheme.outlineVariant;
+                    Color textColor = Theme.of(context).colorScheme.onSurface;
                     Widget? trailingIcon;
 
                     if (hasAnswered) {
                       if (isCorrect) {
-                        cardColor = Colors.green.shade50;
+                        cardColor = Colors.green.withAlpha(25);
                         borderColor = Colors.green;
-                        textColor = Colors.green.shade800;
+                        textColor = Colors.green;
                         trailingIcon = const Icon(Icons.check_circle, color: Colors.green);
                       } else if (isSelected && !isCorrect) {
-                        cardColor = Colors.red.shade50;
+                        cardColor = Colors.red.withAlpha(25);
                         borderColor = Colors.red;
-                        textColor = Colors.red.shade800;
+                        textColor = Colors.red;
                         trailingIcon = const Icon(Icons.cancel, color: Colors.red);
                       }
                     } else if (isSelected) {
@@ -388,22 +388,22 @@ class _TestSessionScreenState extends State<TestSessionScreen> {
                     Container(
                       padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
-                        color: Colors.blue.shade50,
+                        color: Theme.of(context).colorScheme.primaryContainer.withAlpha(60),
                         borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: Colors.blue.shade200),
+                        border: Border.all(color: Theme.of(context).colorScheme.primary.withAlpha(80)),
                       ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Row(
                             children: [
-                              Icon(Icons.info_outline, color: OntarioColors.blue, size: 18),
+                              Icon(Icons.info_outline, color: Theme.of(context).colorScheme.primary, size: 18),
                               const SizedBox(width: 8),
                               Text(
                                 AppStrings(SettingsController().language).explanation,
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
-                                  color: OntarioColors.blue,
+                                  color: Theme.of(context).colorScheme.primary,
                                 ),
                               ),
                             ],
@@ -411,7 +411,7 @@ class _TestSessionScreenState extends State<TestSessionScreen> {
                           const SizedBox(height: 8),
                           Text(
                             question.explanation,
-                            style: TextStyle(color: Colors.blue.shade900, height: 1.5),
+                            style: TextStyle(color: Theme.of(context).colorScheme.onSurface, height: 1.5),
                           ),
                         ],
                       ),
@@ -425,7 +425,7 @@ class _TestSessionScreenState extends State<TestSessionScreen> {
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: Theme.of(context).colorScheme.surface,
                 boxShadow: [
                   BoxShadow(color: Colors.black.withAlpha(20), blurRadius: 8, offset: const Offset(0, -2)),
                 ],

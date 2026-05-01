@@ -169,10 +169,10 @@ class ResultsScreen extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: passed ? Colors.green.shade50 : Colors.orange.shade50,
+                color: passed ? Colors.green.withAlpha(25) : Colors.orange.withAlpha(25),
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(
-                  color: passed ? Colors.green.shade200 : Colors.orange.shade200,
+                  color: passed ? Colors.green.withAlpha(80) : Colors.orange.withAlpha(80),
                 ),
               ),
               child: Row(
@@ -186,7 +186,7 @@ class ResultsScreen extends StatelessWidget {
                     child: Text(
                       passed ? s.passMessage : s.failMessage,
                       style: TextStyle(
-                        color: passed ? Colors.green.shade800 : Colors.orange.shade800,
+                        color: passed ? Colors.green : Colors.orange,
                         fontSize: 13,
                       ),
                     ),
@@ -202,14 +202,13 @@ class ResultsScreen extends StatelessWidget {
 
   Widget _buildRewardsCard(BuildContext context, AppStrings s) {
     return Card(
-      color: Colors.amber.shade50,
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            _buildRewardItem('💰', '+$pointsEarned', s.points, Colors.amber.shade700),
-            Container(width: 1, height: 40, color: Colors.amber.shade200),
+            _buildRewardItem('💰', '+$pointsEarned', s.points, Colors.amber),
+            Container(width: 1, height: 40, color: Colors.amber.withAlpha(80)),
             _buildRewardItem('⚡', '+$xpEarned', s.xp, Colors.blue),
           ],
         ),
@@ -239,7 +238,7 @@ class ResultsScreen extends StatelessWidget {
         Icon(icon, color: color, size: 28),
         const SizedBox(height: 4),
         Text(value, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: color)),
-        Text(label, style: TextStyle(fontSize: 12, color: Colors.grey.shade600)),
+        Text(label, style: TextStyle(fontSize: 12, color: Theme.of(context).colorScheme.onSurface.withAlpha(153))),
       ],
     );
   }
@@ -272,7 +271,7 @@ class ResultsScreen extends StatelessWidget {
                         borderRadius: BorderRadius.circular(4),
                         child: LinearProgressIndicator(
                           value: pct,
-                          backgroundColor: Colors.grey.shade200,
+                            backgroundColor: Theme.of(context).colorScheme.outlineVariant.withAlpha(76),
                           color: pct >= 0.8 ? Colors.green : pct >= 0.6 ? Colors.orange : Colors.red,
                           minHeight: 6,
                         ),

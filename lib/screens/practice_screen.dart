@@ -155,7 +155,7 @@ class _PracticeScreenState extends State<PracticeScreen> {
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: Colors.green.shade50,
+                  color: Colors.green.withAlpha(25),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Row(
@@ -224,7 +224,7 @@ class _PracticeScreenState extends State<PracticeScreen> {
                   children: [
                     Text(s.testTypeName(type), style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
                     const SizedBox(height: 4),
-                    Text(s.testTypeDesc(type), style: TextStyle(color: Colors.grey.shade600, fontSize: 13)),
+                    Text(s.testTypeDesc(type), style: TextStyle(color: Theme.of(context).colorScheme.onSurface.withAlpha(153), fontSize: 13)),
                     const SizedBox(height: 8),
                     Row(
                       children: [

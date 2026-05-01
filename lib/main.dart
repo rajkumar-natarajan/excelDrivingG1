@@ -86,6 +86,7 @@ class ExcelDrivingG1App extends StatelessWidget {
     return ThemeData(
       useMaterial3: true,
       colorScheme: ColorScheme.fromSeed(seedColor: primary, brightness: Brightness.dark),
+      scaffoldBackgroundColor: const Color(0xFF0D1117),
       appBarTheme: const AppBarTheme(
         backgroundColor: Color(0xFF1A1F36),
         foregroundColor: Colors.white,
@@ -96,6 +97,25 @@ class ExcelDrivingG1App extends StatelessWidget {
       cardTheme: CardThemeData(
         elevation: 2,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+      ),
+      filledButtonTheme: FilledButtonThemeData(
+        style: FilledButton.styleFrom(
+          backgroundColor: primary,
+          foregroundColor: Colors.white,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+        ),
+      ),
+      elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: primary,
+          foregroundColor: Colors.white,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          elevation: 0,
+        ),
+      ),
+      chipTheme: ChipThemeData(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       ),
     );
   }
@@ -149,8 +169,8 @@ class _MainNavigationState extends State<MainNavigation> {
         selectedIndex: _currentIndex,
         onDestinationSelected: (index) => setState(() => _currentIndex = index),
         destinations: destinations,
-        backgroundColor: Colors.white,
-        indicatorColor: const Color(0xFF003F8A).withAlpha(25),
+        backgroundColor: Theme.of(context).colorScheme.surface,
+        indicatorColor: Theme.of(context).colorScheme.primary.withAlpha(30),
         labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
       ),
     );

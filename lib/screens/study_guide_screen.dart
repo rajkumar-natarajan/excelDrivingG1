@@ -182,7 +182,7 @@ class StudyGuideScreen extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(description, style: TextStyle(color: Colors.grey.shade700, fontSize: 13)),
+                Text(description, style: TextStyle(color: Theme.of(context).colorScheme.onSurface.withAlpha(178), fontSize: 13)),
                 const SizedBox(height: 12),
                 ...facts.map((fact) => Padding(
                       padding: const EdgeInsets.only(bottom: 6),
@@ -226,7 +226,7 @@ class StudyGuideScreen extends StatelessWidget {
           children: [
             Row(
               children: [
-                const Icon(Icons.table_chart, color: Color(0xFF003F8A)),
+                const Icon(Icons.table_chart),
                 const SizedBox(width: 8),
                 Text('Quick Reference', style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
               ],
@@ -238,7 +238,7 @@ class StudyGuideScreen extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(row[0], style: const TextStyle(fontSize: 13)),
-                      Text(row[1], style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: Color(0xFF003F8A))),
+                Text(row[1], style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: Theme.of(context).colorScheme.primary)),
                     ],
                   ),
                 )),
