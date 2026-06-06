@@ -200,6 +200,12 @@ class AppStrings {
   String get testPassingScoreValue =>
       isFr ? '80 % (16/20 ou 32/40)' : '80% (16/20 or 32/40)';
 
+  String get legalSection => isFr ? 'Légal & Support' : 'Legal & Support';
+  String get privacyPolicy => isFr ? 'Politique de confidentialité' : 'Privacy Policy';
+  String get termsConditions => isFr ? 'Conditions d\'utilisation' : 'Terms & Conditions';
+  String get supportLabel => isFr ? 'Support' : 'Support';
+  String get appGuideLabel => isFr ? 'Guide de l\'application' : 'App Guide';
+
   // Difficulty names
   String difficultyName(Difficulty d) {
     if (isFr) {

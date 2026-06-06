@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../controllers/settings_controller.dart';
 import '../controllers/gamification_controller.dart';
 import '../controllers/smart_learning_controller.dart';
@@ -42,6 +43,17 @@ class SettingsScreen extends StatelessWidget {
                 _buildInfoTile(context, Icons.gavel, s.contentSource, s.contentSourceValue),
                 _buildInfoTile(context, Icons.location_on, s.province, s.provinceValue),
                 _buildInfoTile(context, Icons.school, s.testPassingScore, s.testPassingScoreValue),
+              ]),
+              const SizedBox(height: 16),
+              _buildSection(context, s.legalSection, [
+                _buildLinkTile(context, Icons.privacy_tip_outlined, s.privacyPolicy,
+                    'https://rajkumar-natarajan.github.io/excelDrivingG1/privacy.html'),
+                _buildLinkTile(context, Icons.description_outlined, s.termsConditions,
+                    'https://rajkumar-natarajan.github.io/excelDrivingG1/terms.html'),
+                _buildLinkTile(context, Icons.help_outline, s.supportLabel,
+                    'https://rajkumar-natarajan.github.io/excelDrivingG1/support.html'),
+                _buildLinkTile(context, Icons.menu_book_outlined, s.appGuideLabel,
+                    'https://rajkumar-natarajan.github.io/excelDrivingG1/app-guide.html'),
               ]),
             ],
           );
@@ -145,8 +157,21 @@ class SettingsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildClearDataTile(BuildContext context, GamificationController gamification, SmartLearningController smartLearning, AppStrings s) {
+  Widget _buildLinkTile(BuildContext context, IconData icon, String label, String url) {
     return ListTile(
+      leading: Icon(icon),
+      title: Text(label),
+      trailing: const Icon(Icons.open_in_new, size: 18),
+      onTap: () async {
+        final uri = Uri.parse(url);
+        if (await canLaunchUrl(uri)) {
+          await launchUrl(uri, mode: LaunchMode.externalApplication);
+        }
+      },
+    );
+  }
+
+  Widget _buildClearDataTile(BuildContext context, GamificationController gamification, SmartLearningController smartLearning, AppStrings s) {    return ListTile(
       leading: const Icon(Icons.delete_outline, color: Colors.red),
       title: Text(s.clearAllData, style: const TextStyle(color: Colors.red)),
       subtitle: Text(s.clearDataMessage),
