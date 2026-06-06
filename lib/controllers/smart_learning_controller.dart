@@ -206,6 +206,7 @@ class SmartLearningController extends ChangeNotifier {
     _masteredQuestions.clear();
     _timeBySubType.clear();
     _testHistory.clear();
+    _isInitialized = false; // allow re-initialization after a full clear
     await _save();
     notifyListeners();
   }

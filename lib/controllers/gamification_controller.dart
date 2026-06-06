@@ -247,6 +247,7 @@ class GamificationController extends ChangeNotifier {
     _currentStreak = 0; _bestStreak = 0; _dailyStreak = 0;
     _lastPracticeDate = null; _unlockedAchievements.clear();
     _achievementProgress.clear(); _todayQuestions = 0; _todayCorrect = 0;
+    _isInitialized = false; // allow re-initialization after a full clear
     await _save();
     notifyListeners();
   }

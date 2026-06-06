@@ -25,13 +25,17 @@ class _PracticeScreenState extends State<PracticeScreen> {
     super.initState();
     _selectedDifficulty = SettingsController().defaultDifficulty;
     _settings.addListener(_onSettingsChanged);
+    _smartLearning.addListener(_onSmartLearningChanged);
   }
 
   @override
   void dispose() {
     _settings.removeListener(_onSettingsChanged);
+    _smartLearning.removeListener(_onSmartLearningChanged);
     super.dispose();
   }
+
+  void _onSmartLearningChanged() => setState(() {});
 
   void _onSettingsChanged() => setState(() {});
 

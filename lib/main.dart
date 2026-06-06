@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'controllers/settings_controller.dart';
+import 'controllers/smart_learning_controller.dart';
+import 'controllers/gamification_controller.dart';
 import 'l10n/app_strings.dart';
 import 'screens/dashboard_screen.dart';
 import 'screens/practice_screen.dart';
@@ -17,6 +19,12 @@ void main() async {
     // Some iPad/simulator configurations do not support programmatic
     // orientation locking — silently ignore.
   }
+  // Load persisted data before the UI renders so bookmarks, weak areas,
+  // and gamification stats are immediately available.
+  await Future.wait([
+    SmartLearningController().initialize(),
+    GamificationController().initialize(),
+  ]);
   runApp(const ExcelDrivingG1App());
 }
 
